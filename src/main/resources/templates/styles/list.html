@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Style Templates - Smart Dorji Shop</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <nav class="bg-white shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <span class="text-xl font-bold text-indigo-600">Smart Dorji Shop</span>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <a href="/" class="text-gray-700 hover:text-indigo-600 font-medium transition">Dashboard</a>
+                    <a href="/styles" class="text-indigo-600 font-medium">Styles</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+        <div class="px-4 sm:px-0">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold text-gray-900">Style Templates</h2>
+                <a href="/styles/new"
+                   class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded transition duration-150 ease-in-out">
+                    Create New Style
+                </a>
+            </div>
+
+            <div class="bg-white shadow rounded-lg overflow-hidden">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Style Name</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Base Price</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Est. Labor Hours</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                        <tr th:each="style : ${styles}" class="hover:bg-gray-50 transition">
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900" th:text="${style.Style_name}">Style Name</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700" th:text="${#numbers.formatDecimal(style.Base_Price, 1, 2, 'COMMA')} + ' BTN'">Price</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700" th:text="${style.Estimated_Labor_Hours}">Hours</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                <a th:href="@{|/styles/${style.Style_ID}/edit|}" class="text-indigo-600 hover:text-indigo-900 mr-3">Edit</a>
+                                <a th:href="@{|/styles/${style.Style_ID}/measurements|}" class="text-indigo-600 hover:text-indigo-900 font-medium">Measurements</a>
+                            </td>
+                        </tr>
+                        <tr th:if="${styles == null or styles.size() == 0}">
+                            <td colspan="4" class="px-6 py-12 text-center text-gray-500">No style templates found. Click "Create New Style" to add one.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+</body>
+</html>

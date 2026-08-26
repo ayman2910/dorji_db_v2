@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Style - Smart Dorji Shop</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <nav class="bg-white shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <span class="text-xl font-bold text-indigo-600">Smart Dorji Shop</span>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <a href="/" class="text-gray-700 hover:text-indigo-600 font-medium transition">Dashboard</a>
+                    <a href="/styles" class="text-indigo-600 font-medium">Styles</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+        <div class="px-4 sm:px-0">
+            <div class="max-w-2xl mx-auto">
+                <div class="bg-white shadow rounded-lg p-6">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-6">Create New Style Template</h2>
+
+                    <form th:action="@{/styles}" method="post" class="space-y-4">
+                        <div>
+                            <label for="styleName" class="block text-sm font-medium text-gray-700 mb-1">Style Name</label>
+                            <input type="text"
+                                   id="styleName"
+                                   name="styleName"
+                                   required
+                                   class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                                   placeholder="e.g., Classic Panjabi">
+                        </div>
+
+                        <div>
+                            <label for="basePrice" class="block text-sm font-medium text-gray-700 mb-1">Base Price (BTN)</label>
+                            <input type="number"
+                                   id="basePrice"
+                                   name="basePrice"
+                                   required
+                                   step="0.01"
+                                   min="0"
+                                   class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                                   placeholder="e.g., 1500.00">
+                        </div>
+
+                        <div>
+                            <label for="estimatedHours" class="block text-sm font-medium text-gray-700 mb-1">Estimated Labor Hours</label>
+                            <input type="number"
+                                   id="estimatedHours"
+                                   name="estimatedHours"
+                                   required
+                                   step="0.1"
+                                   min="0"
+                                   class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                                   placeholder="e.g., 8.5">
+                        </div>
+
+                        <div class="flex justify-end space-x-3 pt-4 border-t border-gray-200">
+                            <a href="/styles"
+                               class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-2 px-4 rounded transition duration-150 ease-in-out">
+                                Cancel
+                            </a>
+                            <button type="submit"
+                                    class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded transition duration-150 ease-in-out">
+                                Save
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+</html>

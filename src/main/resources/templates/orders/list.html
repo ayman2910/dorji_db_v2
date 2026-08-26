@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Orders - Smart Dorji Shop</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 min-h-screen">
+<nav class="bg-white shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between h-16">
+            <div class="flex items-center">
+                <a href="/dashboard" class="text-xl font-bold text-indigo-600">Smart Dorji Shop</a>
+            </div>
+            <div class="flex items-center space-x-4">
+                <a href="/styles" class="text-gray-700 hover:text-indigo-600 font-medium transition">Manage Styles</a>
+                <a href="/inventory" class="text-gray-700 hover:text-indigo-600 font-medium transition">Inventory</a>
+                <a href="/orders" class="text-indigo-600 font-medium">Orders</a>
+                <form th:action="@{/logout}" method="post">
+                    <button type="submit" class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-2 px-4 rounded transition duration-150 ease-in-out">
+                        Sign Out
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<main class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+    <div class="px-4 py-6 sm:px-0">
+        <div class="flex justify-between items-center mb-6">
+            <h1 class="text-2xl font-semibold text-gray-800">Outfit Orders</h1>
+            <div class="flex items-center space-x-4">
+                <a href="/orders/new" class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded transition duration-150 ease-in-out">New Order</a>
+                <a href="/dashboard" class="text-gray-600 hover:text-indigo-600 font-medium transition">Back to Dashboard</a>
+            </div>
+        </div>
+
+        <div class="bg-white shadow rounded-lg overflow-hidden">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-100">
+                    <tr>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Order ID</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Customer</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Style</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Order Date</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Delivery Date</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total Price</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                    <tr th:each="order : ${orders}" class="hover:bg-gray-50 transition">
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800" th:text="${order.Order_ID}">1</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800" th:text="${order.Customer_Name}">Customer</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800" th:text="${order.Style_name}">Style</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800" th:text="${order.Order_Date}">2026-01-01</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800" th:text="${order.Delivery_Date}">2026-01-15</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800" th:text="${order.Total_Price}">0.00</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800">
+                            <form th:action="@{|/orders/${order.Order_ID}/status|}" method="post">
+                                <select name="status" onchange="this.form.submit()"
+                                        class="px-2 py-1 text-sm border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white">
+                                    <option value="MEASURED" th:selected="${order.Order_Status == 'MEASURED'}">MEASURED</option>
+                                    <option value="CUTTING" th:selected="${order.Order_Status == 'CUTTING'}">CUTTING</option>
+                                    <option value="SEWING" th:selected="${order.Order_Status == 'SEWING'}">SEWING</option>
+                                    <option value="FITTING" th:selected="${order.Order_Status == 'FITTING'}">FITTING</option>
+                                    <option value="READY" th:selected="${order.Order_Status == 'READY'}">READY</option>
+                                    <option value="READY_FOR_DELIVERY" th:selected="${order.Order_Status == 'READY_FOR_DELIVERY'}">READY_FOR_DELIVERY</option>
+                                    <option value="DELIVERED" th:selected="${order.Order_Status == 'DELIVERED'}">DELIVERED</option>
+                                </select>
+                            </form>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm">
+                            <a th:href="@{|/orders/${order.Order_ID}/measurements|}" class="text-blue-600 hover:text-blue-800 font-medium">Take Measurements</a>
+                            <a th:href="@{|/orders/${order.Order_ID}/materials|}" class="ml-3 text-blue-600 hover:text-blue-800 font-medium">Materials</a>
+                        </td>
+                    </tr>
+                    <tr th:if="${orders.empty}">
+                        <td colspan="8" class="px-6 py-4 text-center text-sm text-gray-500">No orders found.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</main>
+</body>
+</html>

@@ -1,5 +1,6 @@
 package com.tailor_db.app.service;
 
+import com.tailor_db.app.dao.UserDao;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -9,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.PreparedStatement;
 import java.sql.Statement;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -16,10 +18,20 @@ public class UserService {
 
     private final JdbcTemplate jdbcTemplate;
     private final PasswordEncoder passwordEncoder;
+    private final UserDao userDao;
 
-    public UserService(JdbcTemplate jdbcTemplate, PasswordEncoder passwordEncoder) {
+    public UserService(JdbcTemplate jdbcTemplate, PasswordEncoder passwordEncoder, UserDao userDao) {
         this.jdbcTemplate = jdbcTemplate;
         this.passwordEncoder = passwordEncoder;
+        this.userDao = userDao;
+    }
+
+    public List<Map<String, Object>> getCustomers() {
+        return userDao.findByRole("CUSTOMER");
+    }
+
+    public Map<String, Object> getUserByUsername(String username) {
+        return userDao.findByUsername(username);
     }
 
     @Transactional

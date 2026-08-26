@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Order - Smart Dorji Shop</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 min-h-screen">
+<nav class="bg-white shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between h-16">
+            <div class="flex items-center">
+                <a href="/dashboard" class="text-xl font-bold text-indigo-600">Smart Dorji Shop</a>
+            </div>
+            <div class="flex items-center space-x-4">
+                <a href="/styles" class="text-gray-700 hover:text-indigo-600 font-medium transition">Manage Styles</a>
+                <a href="/inventory" class="text-gray-700 hover:text-indigo-600 font-medium transition">Inventory</a>
+                <a href="/orders" class="text-indigo-600 font-medium">Orders</a>
+                <form th:action="@{/logout}" method="post">
+                    <button type="submit" class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-2 px-4 rounded transition duration-150 ease-in-out">
+                        Sign Out
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<main class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+    <div class="px-4 py-6 sm:px-0">
+        <div class="flex justify-between items-center mb-6">
+            <h1 class="text-2xl font-semibold text-gray-800">Create Outfit Order</h1>
+            <a href="/orders" class="text-gray-600 hover:text-indigo-600 font-medium transition">Back to Orders</a>
+        </div>
+
+        <div class="bg-white shadow rounded-lg">
+            <form th:action="@{/orders}" method="post" class="p-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Customer</label>
+                        <select name="customerId" required class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                            <option value="">Select a customer</option>
+                            <option th:each="customer : ${customers}"
+                                    th:value="${customer.USER_ID}"
+                                    th:text="${customer.Username}">Customer</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Style</label>
+                        <select name="styleId" required class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                            <option value="">Select a style</option>
+                            <option th:each="style : ${styles}"
+                                    th:value="${style.Style_ID}"
+                                    th:text="${style.Style_name}">Style</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Delivery Date</label>
+                        <input type="date" name="deliveryDate" required class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Advance Paid</label>
+                        <input type="number" name="advancePaid" step="0.01" min="0" value="0" required class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                    </div>
+                </div>
+
+                <div class="flex justify-end space-x-4 mt-6 pt-6 border-t border-gray-200">
+                    <a href="/orders" class="bg-gray-200 hover:bg-gray-300 text-gray-700 font-semibold py-2 px-4 rounded transition duration-150 ease-in-out">Cancel</a>
+                    <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded transition duration-150 ease-in-out">Create Order</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</main>
+</body>
+</html>

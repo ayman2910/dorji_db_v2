@@ -1,5 +1,6 @@
 package com.tailor_db.app.security;
 
+import com.tailor_db.app.service.TailorAdminService;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -14,9 +15,11 @@ import java.util.Map;
 public class CustomUserDetailsService implements UserDetailsService {
 
     private final JdbcTemplate jdbcTemplate;
+    private final TailorAdminService tailorAdminService;
 
-    public CustomUserDetailsService(JdbcTemplate jdbcTemplate) {
+    public CustomUserDetailsService(JdbcTemplate jdbcTemplate, TailorAdminService tailorAdminService) {
         this.jdbcTemplate = jdbcTemplate;
+        this.tailorAdminService = tailorAdminService;
     }
 
     @Override
@@ -30,12 +33,19 @@ public class CustomUserDetailsService implements UserDetailsService {
         }
 
         Map<String, Object> userData = users.get(0);
+        int userId = ((Number) userData.get("USER_ID")).intValue();
         String passwordHash = (String) userData.get("Password_hash");
         String role = (String) userData.get("Role");
+
+        boolean enabled = true;
+        if ("TAILOR".equalsIgnoreCase(role)) {
+            enabled = tailorAdminService.canTailorLogin(userId);
+        }
 
         return User.withUsername(username)
                 .password(passwordHash)
                 .authorities("ROLE_" + role)
+                .disabled(!enabled)
                 .build();
     }
 }

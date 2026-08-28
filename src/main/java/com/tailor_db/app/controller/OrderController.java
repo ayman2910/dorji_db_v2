@@ -108,4 +108,12 @@ public class OrderController {
         materialService.consumeInventoryForOrder(id, formData, tailorId);
         return "redirect:/orders/" + id + "/materials";
     }
+
+    @PostMapping("/{id}/delete")
+    public String deleteOrder(@PathVariable int id, Authentication auth) {
+        Map<String, Object> tailor = userService.getUserByUsername(auth.getName());
+        int tailorId = ((Number) tailor.get("USER_ID")).intValue();
+        orderService.deleteOrder(id, tailorId);
+        return "redirect:/orders";
+    }
 }

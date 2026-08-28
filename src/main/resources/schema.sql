@@ -183,3 +183,21 @@ CREATE TABLE TAILOR_ACTIVITY_LOG (
                                              REFERENCES APP_USER(USER_ID)
                                              ON DELETE CASCADE
 );
+
+-- 1. Fix Customer Relationship
+ALTER TABLE OUTFIT_ORDER DROP FOREIGN KEY fk_order_customer;
+ALTER TABLE OUTFIT_ORDER
+    ADD CONSTRAINT fk_order_customer
+        FOREIGN KEY (Customer_ID) REFERENCES CUSTOMER(USER_ID) ON DELETE CASCADE;
+
+-- 2. Fix Tailor Relationship
+ALTER TABLE OUTFIT_ORDER DROP FOREIGN KEY fk_order_tailor;
+ALTER TABLE OUTFIT_ORDER
+    ADD CONSTRAINT fk_order_tailor
+        FOREIGN KEY (Tailor_ID) REFERENCES TAILOR(USER_ID) ON DELETE CASCADE;
+
+-- 3. Fix Style Template Relationship
+ALTER TABLE OUTFIT_ORDER DROP FOREIGN KEY fk_order_style;
+ALTER TABLE OUTFIT_ORDER
+    ADD CONSTRAINT fk_order_style
+        FOREIGN KEY (Style_ID) REFERENCES STYLE_TEMPLATE(Style_ID) ON DELETE CASCADE;

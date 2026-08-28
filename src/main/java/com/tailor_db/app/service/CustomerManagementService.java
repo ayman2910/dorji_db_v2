@@ -48,4 +48,12 @@ public class CustomerManagementService {
         auditLogService.logActivity(tailorId, "INSERT", "APP_USER/CUSTOMER", String.valueOf(userId),
                 null, "Registered Walk-In: " + firstName + " " + lastName);
     }
+
+    @Transactional
+    public void deleteCustomer(int id, int tailorId) {
+        Map<String, Object> customer = customerManagementDao.findById(id);
+        String customerName = customer != null ? customer.get("First_name") + " " + customer.get("Last_name") : "ID: " + id;
+        customerManagementDao.deleteCustomer(id);
+        auditLogService.logActivity(tailorId, "DELETE", "APP_USER/CUSTOMER", String.valueOf(id), customerName, null);
+    }
 }

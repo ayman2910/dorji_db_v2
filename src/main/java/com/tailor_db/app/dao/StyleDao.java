@@ -39,4 +39,9 @@ public class StyleDao {
         String sql = "UPDATE STYLE_TEMPLATE SET Style_name = ?, Base_Price = ?, Estimated_Labor_Hours = ? WHERE Style_ID = ?";
         jdbcTemplate.update(sql, name, price, hours, id);
     }
+
+    public void delete(int id) {
+        String sql = "DELETE FROM STYLE_TEMPLATE WHERE Style_ID = ?";
+        jdbcTemplate.update(sql, id);
+    }
 }

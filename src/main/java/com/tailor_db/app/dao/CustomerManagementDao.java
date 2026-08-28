@@ -58,4 +58,18 @@ public class CustomerManagementDao {
                      "ORDER BY u.First_name";
         return jdbcTemplate.queryForList(sql);
     }
+
+    public Map<String, Object> findById(int id) {
+        String sql = "SELECT u.USER_ID, u.First_name, u.Last_name, u.Username FROM APP_USER u WHERE u.USER_ID = ?";
+        try {
+            return jdbcTemplate.queryForMap(sql, id);
+        } catch (org.springframework.dao.EmptyResultDataAccessException e) {
+            return null;
+        }
+    }
+
+    public void deleteCustomer(int id) {
+        String sql = "DELETE FROM APP_USER WHERE USER_ID = ?";
+        jdbcTemplate.update(sql, id);
+    }
 }

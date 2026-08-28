@@ -1,6 +1,8 @@
 package com.tailor_db.app.controller;
 
 import com.tailor_db.app.service.StyleService;
+import com.tailor_db.app.service.UserService;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -12,9 +14,11 @@ import java.util.Map;
 public class StyleController {
 
     private final StyleService styleService;
+    private final UserService userService;
 
-    public StyleController(StyleService styleService) {
+    public StyleController(StyleService styleService, UserService userService) {
         this.styleService = styleService;
+        this.userService = userService;
     }
 
     @GetMapping
@@ -44,6 +48,14 @@ public class StyleController {
     @PostMapping("/{id}")
     public String updateStyle(@PathVariable int id, @RequestParam Map<String, String> formData) {
         styleService.updateStyle(id, formData);
+        return "redirect:/styles";
+    }
+
+    @PostMapping("/{id}/delete")
+    public String deleteStyle(@PathVariable int id, Authentication auth) {
+        Map<String, Object> tailor = userService.getUserByUsername(auth.getName());
+        int tailorId = ((Number) tailor.get("USER_ID")).intValue();
+        styleService.deleteStyle(id, tailorId);
         return "redirect:/styles";
     }
 

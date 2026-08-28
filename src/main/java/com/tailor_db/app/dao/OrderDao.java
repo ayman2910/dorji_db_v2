@@ -69,6 +69,11 @@ public class OrderDao {
         jdbcTemplate.update(sql, newStatus, orderId);
     }
 
+    public void deleteOrder(int orderId) {
+        String sql = "DELETE FROM OUTFIT_ORDER WHERE Order_ID = ?";
+        jdbcTemplate.update(sql, orderId);
+    }
+
     private Date toSqlDate(Object value) {
         if (value instanceof Date date) {
             return date;

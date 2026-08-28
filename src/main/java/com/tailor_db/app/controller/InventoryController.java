@@ -54,4 +54,12 @@ public class InventoryController {
         inventoryService.updateItem(id, formData, tailorId);
         return "redirect:/inventory";
     }
+
+    @PostMapping("/{id}/delete")
+    public String deleteItem(@PathVariable int id, Authentication auth) {
+        Map<String, Object> tailor = userService.getUserByUsername(auth.getName());
+        int tailorId = ((Number) tailor.get("USER_ID")).intValue();
+        inventoryService.deleteItem(id, tailorId);
+        return "redirect:/inventory";
+    }
 }

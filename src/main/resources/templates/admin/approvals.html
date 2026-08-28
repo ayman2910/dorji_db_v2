@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Customer Management - Smart Dorji Shop</title>
+    <title>Tailor Approvals - Smart Dorji Shop</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-50 min-h-screen">
@@ -18,9 +18,9 @@
                 <a href="/styles" class="text-gray-700 hover:text-indigo-600 font-medium transition">Manage Styles</a>
                 <a href="/inventory" class="text-gray-700 hover:text-indigo-600 font-medium transition">Inventory</a>
                 <a href="/orders" class="text-gray-700 hover:text-indigo-600 font-medium transition">Orders</a>
-                <a href="/customers" class="text-indigo-600 font-medium">Customers</a>
+                <a href="/customers" class="text-gray-700 hover:text-indigo-600 font-medium transition">Customers</a>
                 <a href="/audit-logs" class="text-gray-700 hover:text-indigo-600 font-medium transition">Audit Logs</a>
-                <a th:if="${session.isMasterAdmin}" href="/admin/tailors" class="text-gray-700 hover:text-indigo-600 font-medium transition">Approvals</a>
+                <a href="/admin/tailors" class="text-indigo-600 font-medium">Approvals</a>
                 <form th:action="@{/logout}" method="post">
                     <button type="submit" class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-2 px-4 rounded transition duration-150 ease-in-out">
                         Sign Out
@@ -34,11 +34,11 @@
 <main class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
     <div class="px-4 py-6 sm:px-0">
         <div class="flex justify-between items-center mb-6">
-            <h1 class="text-2xl font-semibold text-gray-800">Customer Management</h1>
-            <div class="flex items-center space-x-4">
-                <a href="/customers/new" class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded transition duration-150 ease-in-out">Register New Customer</a>
-                <a href="/dashboard" class="text-gray-600 hover:text-indigo-600 font-medium transition">Back to Dashboard</a>
+            <div>
+                <h1 class="text-2xl font-semibold text-gray-800">Pending Tailor Approvals</h1>
+                <p class="text-sm text-gray-500 mt-1">Review and approve new tailor registration requests</p>
             </div>
+            <a href="/dashboard" class="text-gray-600 hover:text-indigo-600 font-medium transition">Back to Dashboard</a>
         </div>
 
         <div class="bg-white shadow rounded-lg overflow-hidden">
@@ -47,25 +47,30 @@
                     <tr>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Username</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Phone</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">City</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Specialty</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Action</th>
                     </tr>
                 </thead>
                 <tbody class="bg-white divide-y divide-gray-200">
-                    <tr th:each="customer : ${customers}" class="hover:bg-gray-50 transition">
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900" th:text="${customer.First_name + ' ' + customer.Last_name}">John Doe</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800" th:text="${customer.Username}">johndoe</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800" th:text="${customer.Phone_Number != null ? customer.Phone_Number : 'N/A'}">17123456</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800" th:text="${customer.City != null ? customer.City : 'N/A'}">Thimphu</td>
+                    <tr th:each="t : ${pendingTailors}" class="hover:bg-gray-50 transition">
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800" th:text="${t.First_name + ' ' + t.Last_name}">Rahim Islam</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600" th:text="${t.Username}">rahim</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600" th:text="${t.Specialty}">Suits & Blazers</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm">
-                            <form th:action="@{|/customers/${customer.USER_ID}/delete|}" method="post" class="inline" onsubmit="return confirm('Are you sure you want to delete this customer?');">
-                                <button type="submit" class="text-red-600 hover:text-red-800 font-medium">Delete</button>
+                            <form th:action="@{|/admin/tailors/${t.USER_ID}/approve|}" method="post" class="inline">
+                                <button type="submit" class="bg-green-600 hover:bg-green-700 text-white font-medium py-1.5 px-4 rounded shadow-sm text-xs transition duration-150 ease-in-out">
+                                    Approve
+                                </button>
+                            </form>
+                            <form th:action="@{|/admin/tailors/${t.USER_ID}/reject|}" method="post" class="inline ml-2" onsubmit="return confirm('Are you sure you want to reject and delete this request?');">
+                                <button type="submit" class="text-red-600 hover:text-red-800 font-medium text-xs">
+                                    Reject
+                                </button>
                             </form>
                         </td>
                     </tr>
-                    <tr th:if="${customers == null or customers.empty}">
-                        <td colspan="5" class="px-6 py-8 text-center text-sm text-gray-500">No customers found. Click "Register New Customer" to add one.</td>
+                    <tr th:if="${pendingTailors.empty}">
+                        <td colspan="4" class="px-6 py-8 text-center text-sm text-gray-500">No pending tailor approvals found.</td>
                     </tr>
                 </tbody>
             </table>

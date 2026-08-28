@@ -5,10 +5,7 @@ import com.tailor_db.app.service.UserService;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
@@ -40,6 +37,14 @@ public class CustomerManagementController {
         Map<String, Object> tailor = userService.getUserByUsername(auth.getName());
         int tailorId = ((Number) tailor.get("USER_ID")).intValue();
         customerManagementService.registerWalkInCustomer(formData, tailorId);
+        return "redirect:/customers";
+    }
+
+    @PostMapping("/{id}/delete")
+    public String deleteCustomer(@PathVariable("id") int id, Authentication auth) {
+        Map<String, Object> tailor = userService.getUserByUsername(auth.getName());
+        int tailorId = ((Number) tailor.get("USER_ID")).intValue();
+        customerManagementService.deleteCustomer(id, tailorId);
         return "redirect:/customers";
     }
 }

@@ -20,6 +20,7 @@
                 <a href="/orders" class="text-gray-700 hover:text-indigo-600 font-medium transition">Orders</a>
                 <a href="/customers" class="text-gray-700 hover:text-indigo-600 font-medium transition">Customers</a>
                 <a href="/audit-logs" class="text-indigo-600 font-medium">Audit Logs</a>
+                <a th:if="${session.isMasterAdmin}" href="/admin/tailors" class="text-gray-700 hover:text-indigo-600 font-medium transition">Approvals</a>
                 <form th:action="@{/logout}" method="post">
                     <button type="submit" class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-2 px-4 rounded transition duration-150 ease-in-out">
                         Sign Out
@@ -67,6 +68,7 @@
                             <span th:case="'MEASUREMENT'">Measurement</span>
                             <span th:case="'FABRIC_MATERIAL'">Fabric Material</span>
                             <span th:case="'ORDER_CONSUMES_INVENTORY'">Consumed Inventory</span>
+                            <span th:case="'STYLE_TEMPLATE'">Style Template</span>
                             <span th:case="*" th:text="${log.Target_Table}"></span>
                         </td>
                         <td class="px-6 py-4 text-sm text-red-600" th:text="${log.Old_Value}">MEASURED</td>

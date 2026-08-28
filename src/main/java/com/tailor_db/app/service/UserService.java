@@ -68,7 +68,7 @@ public class UserService {
         // 3. Subtype routing
         String role = formData.get("role");
         if ("TAILOR".equalsIgnoreCase(role)) {
-            String tailorSql = "INSERT INTO TAILOR (USER_ID, Specialty) VALUES (?, ?)";
+            String tailorSql = "INSERT INTO TAILOR (USER_ID, Specialty, Active_status) VALUES (?, ?, 0)";
             jdbcTemplate.update(tailorSql, newUserId, formData.get("specialty"));
         } else if ("CUSTOMER".equalsIgnoreCase(role)) {
             String customerSql = "INSERT INTO CUSTOMER (USER_ID, House_no, Street, City) VALUES (?, ?, ?, ?)";

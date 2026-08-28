@@ -82,6 +82,14 @@ public class OrderService {
         auditLogService.logActivity(tailorId, "UPDATE", "OUTFIT_ORDER", String.valueOf(orderId), oldStatus, newStatus);
     }
 
+    @Transactional
+    public void deleteOrder(int orderId, int tailorId) {
+        Map<String, Object> order = orderDao.findById(orderId);
+        String orderSummary = order != null ? "Customer: " + order.get("Customer_Name") + ", Style: " + order.get("Style_name") : "ID: " + orderId;
+        orderDao.deleteOrder(orderId);
+        auditLogService.logActivity(tailorId, "DELETE", "OUTFIT_ORDER", String.valueOf(orderId), orderSummary, null);
+    }
+
     private BigDecimal parseDecimal(String value) {
         if (value == null || value.trim().isEmpty()) {
             return BigDecimal.ZERO;

@@ -20,6 +20,10 @@ public class DashboardService {
         stats.put("pendingOrders", dashboardDao.getPendingOrdersCount());
         stats.put("totalRevenue", dashboardDao.getTotalRevenue());
         stats.put("lowStockCount", dashboardDao.getLowStockItemCount());
+        stats.put("outstandingBalance", dashboardDao.getOutstandingBalance());
+        stats.put("pipelineBreakdown", dashboardDao.getPipelineBreakdown());
+        stats.put("upcomingDeliveries", dashboardDao.getUpcomingDeliveries());
+        stats.put("recentActivity", dashboardDao.getRecentActivity());
         return stats;
     }
 }

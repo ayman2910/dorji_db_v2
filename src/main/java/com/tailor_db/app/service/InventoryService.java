@@ -57,6 +57,14 @@ public class InventoryService {
                 oldItemName + " (Qty: " + oldQty + ")", name + " (Qty: " + qty + ")");
     }
 
+    @Transactional
+    public void deleteItem(int id, int tailorId) {
+        Map<String, Object> item = inventoryDao.findById(id);
+        String itemName = item != null ? String.valueOf(item.get("Item_Name")) : "ID: " + id;
+        inventoryDao.delete(id);
+        auditLogService.logActivity(tailorId, "DELETE", "INVENTORY_ITEM", String.valueOf(id), itemName, null);
+    }
+
     private int parseInt(String value) {
         if (value == null || value.trim().isEmpty()) {
             return 0;

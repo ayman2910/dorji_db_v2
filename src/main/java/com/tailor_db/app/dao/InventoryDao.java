@@ -39,4 +39,9 @@ public class InventoryDao {
         String sql = "UPDATE INVENTORY_ITEM SET Item_Name = ?, Current_Stock_Qty = ?, Unit_Cost = ?, Reorder_Level = ? WHERE Item_ID = ?";
         jdbcTemplate.update(sql, name, qty, cost, reorderLevel, id);
     }
+
+    public void delete(int id) {
+        String sql = "DELETE FROM INVENTORY_ITEM WHERE Item_ID = ?";
+        jdbcTemplate.update(sql, id);
+    }
 }

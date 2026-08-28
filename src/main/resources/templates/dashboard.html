@@ -1,68 +1,96 @@
 <!DOCTYPE html>
-
 <html xmlns:th="http://www.thymeleaf.org">
-
 <head>
-
     <meta charset="UTF-8">
-
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>Dashboard - Smart Dorji Shop</title>
-
     <script src="https://cdn.tailwindcss.com"></script>
-
 </head>
-
 <body class="bg-gray-50 min-h-screen">
 
 <nav class="bg-white shadow-sm">
-
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-
         <div class="flex justify-between h-16">
-
             <div class="flex items-center">
-
-                <span class="text-xl font-bold text-indigo-600">Smart Dorji Shop</span>
-
+                <a href="/dashboard" class="text-xl font-bold text-indigo-600">Smart Dorji Shop</a>
             </div>
-
             <div class="flex items-center space-x-4">
-                            <a th:if="${isTailor}" href="/styles" class="text-gray-700 hover:text-indigo-600 font-medium transition">Manage Styles</a>
-                            <a th:if="${isTailor}" href="/inventory" class="text-gray-700 hover:text-indigo-600 font-medium transition">Inventory</a>
-                            <a th:if="${isTailor}" href="/orders" class="text-gray-700 hover:text-indigo-600 font-medium transition">Orders</a>
-                            <span class="text-gray-700" th:text="'Hello, ' + ${username}">User</span>
-                            <form th:action="@{/logout}" method="post">
-                                <button type="submit" class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-2 px-4 rounded transition duration-150 ease-in-out">
-                                    Sign Out
-                                </button>
-                            </form>
-                        </div>
-
+                <a th:if="${isTailor}" href="/styles" class="text-gray-700 hover:text-indigo-600 font-medium transition">Manage Styles</a>
+                <a th:if="${isTailor}" href="/inventory" class="text-gray-700 hover:text-indigo-600 font-medium transition">Inventory</a>
+                <a th:if="${isTailor}" href="/orders" class="text-gray-700 hover:text-indigo-600 font-medium transition">Orders</a>
+                <a th:if="${isTailor}" href="/customers" class="text-gray-700 hover:text-indigo-600 font-medium transition">Customers</a>
+                <span class="text-gray-700" th:text="'Hello, ' + ${username}">User</span>
+                <form th:action="@{/logout}" method="post">
+                    <button type="submit" class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-2 px-4 rounded transition duration-150 ease-in-out">
+                        Sign Out
+                    </button>
+                </form>
+            </div>
         </div>
-
     </div>
-
 </nav>
 
+<main class="max-w-7xl mx-auto py-8 sm:px-6 lg:px-8">
+    <div class="px-4 sm:px-0">
+        <!-- Tailor Analytics Dashboard -->
+        <div th:if="${isTailor}">
+            <div class="mb-6">
+                <h1 class="text-2xl font-bold text-gray-900">Tailor Dashboard</h1>
+                <p class="text-sm text-gray-500 mt-1">Shop analytics and operational overview</p>
+            </div>
 
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Card 1: Active Orders (Blue Aesthetic) -->
+                <div class="bg-white rounded-xl shadow-sm border-l-4 border-blue-500 p-6 flex items-center justify-between transition hover:shadow-md">
+                    <div>
+                        <p class="text-sm font-medium text-blue-600 uppercase tracking-wider">Active Orders</p>
+                        <h2 class="text-3xl font-extrabold text-gray-900 mt-2" th:text="${stats.pendingOrders}">0</h2>
+                        <p class="text-xs text-gray-500 mt-1">Orders in progress</p>
+                    </div>
+                    <div class="p-3 bg-blue-50 rounded-full text-blue-600">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
+                        </svg>
+                    </div>
+                </div>
 
-<main class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+                <!-- Card 2: Total Revenue (Green Aesthetic) -->
+                <div class="bg-white rounded-xl shadow-sm border-l-4 border-green-500 p-6 flex items-center justify-between transition hover:shadow-md">
+                    <div>
+                        <p class="text-sm font-medium text-green-600 uppercase tracking-wider">Total Revenue</p>
+                        <h2 class="text-3xl font-extrabold text-gray-900 mt-2" th:text="'Tk ' + ${#numbers.formatDecimal(stats.totalRevenue, 1, 'COMMA', 2, 'POINT')}">Tk 0.00</h2>
+                        <p class="text-xs text-gray-500 mt-1">Cumulative order sales</p>
+                    </div>
+                    <div class="p-3 bg-green-50 rounded-full text-green-600">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                    </div>
+                </div>
 
-    <div class="px-4 py-6 sm:px-0">
-
-        <div class="border-4 border-dashed border-gray-200 rounded-lg h-96 flex items-center justify-center">
-
-            <h1 class="text-3xl font-semibold text-gray-400">Welcome to your Dashboard</h1>
-
+                <!-- Card 3: Items to Reorder (Red Aesthetic, Link to /inventory) -->
+                <a href="/inventory" class="bg-white rounded-xl shadow-sm border-l-4 border-red-500 p-6 flex items-center justify-between transition hover:shadow-md hover:bg-red-50/20 group cursor-pointer block">
+                    <div>
+                        <p class="text-sm font-medium text-red-600 uppercase tracking-wider group-hover:text-red-700">Items to Reorder</p>
+                        <h2 class="text-3xl font-extrabold text-gray-900 mt-2" th:text="${stats.lowStockCount}">0</h2>
+                        <p class="text-xs text-red-500 mt-1 font-medium">Click to manage inventory &rarr;</p>
+                    </div>
+                    <div class="p-3 bg-red-50 rounded-full text-red-600 group-hover:bg-red-100 transition">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                        </svg>
+                    </div>
+                </a>
+            </div>
         </div>
 
+        <!-- Customer Welcome View -->
+        <div th:unless="${isTailor}" class="bg-white shadow rounded-lg p-8 text-center">
+            <h1 class="text-2xl font-bold text-gray-800">Welcome to Smart Dorji Shop</h1>
+            <p class="text-gray-500 mt-2">Welcome, <span th:text="${username}">Customer</span>! Browse your tailoring status and details.</p>
+        </div>
     </div>
-
 </main>
 
 </body>
-
 </html>
-

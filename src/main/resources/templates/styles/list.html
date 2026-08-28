@@ -11,11 +11,19 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-16">
                 <div class="flex items-center">
-                    <span class="text-xl font-bold text-indigo-600">Smart Dorji Shop</span>
+                    <a href="/dashboard" class="text-xl font-bold text-indigo-600">Smart Dorji Shop</a>
                 </div>
                 <div class="flex items-center space-x-4">
-                    <a href="/" class="text-gray-700 hover:text-indigo-600 font-medium transition">Dashboard</a>
-                    <a href="/styles" class="text-indigo-600 font-medium">Styles</a>
+                    <a href="/dashboard" class="text-gray-700 hover:text-indigo-600 font-medium transition">Dashboard</a>
+                    <a href="/styles" class="text-indigo-600 font-medium">Manage Styles</a>
+                    <a href="/inventory" class="text-gray-700 hover:text-indigo-600 font-medium transition">Inventory</a>
+                    <a href="/orders" class="text-gray-700 hover:text-indigo-600 font-medium transition">Orders</a>
+                    <a href="/customers" class="text-gray-700 hover:text-indigo-600 font-medium transition">Customers</a>
+                    <form th:action="@{/logout}" method="post">
+                        <button type="submit" class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-2 px-4 rounded transition duration-150 ease-in-out">
+                            Sign Out
+                        </button>
+                    </form>
                 </div>
             </div>
         </div>
@@ -44,7 +52,7 @@
                     <tbody class="bg-white divide-y divide-gray-200">
                         <tr th:each="style : ${styles}" class="hover:bg-gray-50 transition">
                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900" th:text="${style.Style_name}">Style Name</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700" th:text="${#numbers.formatDecimal(style.Base_Price, 1, 2, 'COMMA')} + ' BTN'">Price</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">Tk [[${#numbers.formatDecimal(style.Base_Price, 1, 'COMMA', 2, 'POINT')}]]</td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700" th:text="${style.Estimated_Labor_Hours}">Hours</td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                 <a th:href="@{|/styles/${style.Style_ID}/edit|}" class="text-indigo-600 hover:text-indigo-900 mr-3">Edit</a>

@@ -1,5 +1,6 @@
 package com.tailor_db.app.controller;
 
+import com.tailor_db.app.service.DashboardService;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Controller;
@@ -10,6 +11,12 @@ import java.security.Principal;
 
 @Controller
 public class AuthController {
+
+    private final DashboardService dashboardService;
+
+    public AuthController(DashboardService dashboardService) {
+        this.dashboardService = dashboardService;
+    }
 
     @GetMapping("/login")
     public String login() {
@@ -24,6 +31,9 @@ public class AuthController {
         boolean isTailor = authentication != null &&
                 authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_TAILOR"));
         model.addAttribute("isTailor", isTailor);
+        if (isTailor) {
+            model.addAttribute("stats", dashboardService.getDashboardStats());
+        }
         return "dashboard";
     }
 
@@ -32,3 +42,4 @@ public class AuthController {
         return "redirect:/dashboard";
     }
 }
+

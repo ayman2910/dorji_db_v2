@@ -1,6 +1,8 @@
 package com.tailor_db.app.controller;
 
 import com.tailor_db.app.service.CustomerManagementService;
+import com.tailor_db.app.service.UserService;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,9 +17,11 @@ import java.util.Map;
 public class CustomerManagementController {
 
     private final CustomerManagementService customerManagementService;
+    private final UserService userService;
 
-    public CustomerManagementController(CustomerManagementService customerManagementService) {
+    public CustomerManagementController(CustomerManagementService customerManagementService, UserService userService) {
         this.customerManagementService = customerManagementService;
+        this.userService = userService;
     }
 
     @GetMapping
@@ -32,8 +36,10 @@ public class CustomerManagementController {
     }
 
     @PostMapping
-    public String registerWalkInCustomer(@RequestParam Map<String, String> formData) {
-        customerManagementService.registerWalkInCustomer(formData);
+    public String registerWalkInCustomer(@RequestParam Map<String, String> formData, Authentication auth) {
+        Map<String, Object> tailor = userService.getUserByUsername(auth.getName());
+        int tailorId = ((Number) tailor.get("USER_ID")).intValue();
+        customerManagementService.registerWalkInCustomer(formData, tailorId);
         return "redirect:/customers";
     }
 }

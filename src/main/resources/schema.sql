@@ -167,3 +167,19 @@ CREATE TABLE ORDER_CONSUMES_INVENTORY (
                                           CONSTRAINT chk_quantity_used
                                               CHECK (Quantity_Used > 0)
 );
+
+CREATE TABLE TAILOR_ACTIVITY_LOG (
+                                     Log_ID INT AUTO_INCREMENT PRIMARY KEY,
+                                     Tailor_ID INT NOT NULL,
+                                     Action_Type ENUM('INSERT', 'UPDATE', 'DELETE') NOT NULL,
+                                     Target_Table VARCHAR(50) NOT NULL,
+                                     Record_ID VARCHAR(50) NOT NULL,
+                                     Old_Value TEXT,
+                                     New_Value TEXT,
+                                     Log_Timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
+
+                                     CONSTRAINT fk_log_tailor
+                                         FOREIGN KEY (Tailor_ID)
+                                             REFERENCES APP_USER(USER_ID)
+                                             ON DELETE CASCADE
+);

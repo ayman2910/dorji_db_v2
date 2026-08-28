@@ -12,9 +12,11 @@ import java.util.Map;
 public class InventoryService {
 
     private final InventoryDao inventoryDao;
+    private final AuditLogService auditLogService;
 
-    public InventoryService(InventoryDao inventoryDao) {
+    public InventoryService(InventoryDao inventoryDao, AuditLogService auditLogService) {
         this.inventoryDao = inventoryDao;
+        this.auditLogService = auditLogService;
     }
 
     public List<Map<String, Object>> getAllItems() {
@@ -26,21 +28,33 @@ public class InventoryService {
     }
 
     @Transactional
-    public void createItem(Map<String, String> formData) {
+    public void createItem(Map<String, String> formData, int tailorId) {
         String name = formData.get("itemName");
         int qty = parseInt(formData.get("currentStockQty"));
         double cost = parseDouble(formData.get("unitCost"));
         int reorderLevel = parseInt(formData.get("reorderLevel"));
         inventoryDao.insert(name, qty, cost, reorderLevel);
+
+        auditLogService.logActivity(tailorId, "INSERT", "INVENTORY_ITEM", name,
+                null, "Added Qty: " + qty);
     }
 
     @Transactional
-    public void updateItem(int id, Map<String, String> formData) {
+    public void updateItem(int id, Map<String, String> formData, int tailorId) {
+        // Fetch old values before update
+        Map<String, Object> oldItem = inventoryDao.findById(id);
+        String oldItemName = oldItem != null ? String.valueOf(oldItem.get("Item_Name")) : "UNKNOWN";
+        String oldQty = oldItem != null ? String.valueOf(oldItem.get("Current_Stock_Qty")) : "0";
+
         String name = formData.get("itemName");
         int qty = parseInt(formData.get("currentStockQty"));
         double cost = parseDouble(formData.get("unitCost"));
         int reorderLevel = parseInt(formData.get("reorderLevel"));
         inventoryDao.update(id, name, qty, cost, reorderLevel);
+
+        // Log the change
+        auditLogService.logActivity(tailorId, "UPDATE", "INVENTORY_ITEM", String.valueOf(id),
+                oldItemName + " (Qty: " + oldQty + ")", name + " (Qty: " + qty + ")");
     }
 
     private int parseInt(String value) {

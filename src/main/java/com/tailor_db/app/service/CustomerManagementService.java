@@ -13,10 +13,12 @@ public class CustomerManagementService {
 
     private final CustomerManagementDao customerManagementDao;
     private final PasswordEncoder passwordEncoder;
+    private final AuditLogService auditLogService;
 
-    public CustomerManagementService(CustomerManagementDao customerManagementDao, PasswordEncoder passwordEncoder) {
+    public CustomerManagementService(CustomerManagementDao customerManagementDao, PasswordEncoder passwordEncoder, AuditLogService auditLogService) {
         this.customerManagementDao = customerManagementDao;
         this.passwordEncoder = passwordEncoder;
+        this.auditLogService = auditLogService;
     }
 
     public List<Map<String, Object>> getAllCustomers() {
@@ -24,7 +26,7 @@ public class CustomerManagementService {
     }
 
     @Transactional
-    public void registerWalkInCustomer(Map<String, String> formData) {
+    public void registerWalkInCustomer(Map<String, String> formData, int tailorId) {
         String firstName = formData.get("firstName");
         String lastName = formData.get("lastName");
         String username = formData.get("username");
@@ -42,5 +44,8 @@ public class CustomerManagementService {
         if (phone != null && !phone.trim().isEmpty()) {
             customerManagementDao.insertUserPhone(userId, phone.trim());
         }
+
+        auditLogService.logActivity(tailorId, "INSERT", "APP_USER/CUSTOMER", String.valueOf(userId),
+                null, "Registered Walk-In: " + firstName + " " + lastName);
     }
 }

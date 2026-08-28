@@ -11,9 +11,11 @@ import java.util.Map;
 public class MeasurementService {
 
     private final MeasurementDao measurementDao;
+    private final AuditLogService auditLogService;
 
-    public MeasurementService(MeasurementDao measurementDao) {
+    public MeasurementService(MeasurementDao measurementDao, AuditLogService auditLogService) {
         this.measurementDao = measurementDao;
+        this.auditLogService = auditLogService;
     }
 
     public List<Map<String, Object>> getMeasurementForm(int orderId) {
@@ -21,7 +23,7 @@ public class MeasurementService {
     }
 
     @Transactional
-    public void saveOrderMeasurements(int orderId, Map<String, String> formData) {
+    public void saveOrderMeasurements(int orderId, Map<String, String> formData, int tailorId) {
         measurementDao.deleteMeasurementsForOrder(orderId);
 
         for (Map.Entry<String, String> entry : formData.entrySet()) {
@@ -34,5 +36,8 @@ public class MeasurementService {
                 measurementDao.insertMeasurement(orderId, key, value.trim());
             }
         }
+
+        auditLogService.logActivity(tailorId, "INSERT", "MEASUREMENT", String.valueOf(orderId),
+                null, "Saved/Updated measurements for order.");
     }
 }

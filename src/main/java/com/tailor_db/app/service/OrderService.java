@@ -16,11 +16,13 @@ public class OrderService {
     private final OrderDao orderDao;
     private final StyleService styleService;
     private final UserService userService;
+    private final AuditLogService auditLogService;
 
-    public OrderService(OrderDao orderDao, StyleService styleService, UserService userService) {
+    public OrderService(OrderDao orderDao, StyleService styleService, UserService userService, AuditLogService auditLogService) {
         this.orderDao = orderDao;
         this.styleService = styleService;
         this.userService = userService;
+        this.auditLogService = auditLogService;
     }
 
     @Transactional
@@ -56,7 +58,12 @@ public class OrderService {
         orderData.put("Total_Price", style.get("Base_Price"));
         orderData.put("Advance_Paid", advancePaid);
 
-        return orderDao.createOrder(orderData);
+        int orderId = orderDao.createOrder(orderData);
+
+        auditLogService.logActivity(tailorId, "INSERT", "OUTFIT_ORDER", String.valueOf(orderId),
+                null, "Created Order for Customer: " + formData.get("customerId"));
+
+        return orderId;
     }
 
     public List<Map<String, Object>> getAllOrders() {
@@ -68,8 +75,11 @@ public class OrderService {
     }
 
     @Transactional
-    public void updateOrderStatus(int orderId, String newStatus) {
+    public void updateOrderStatus(int orderId, String newStatus, int tailorId) {
+        Map<String, Object> order = orderDao.findById(orderId);
+        String oldStatus = order != null ? String.valueOf(order.get("Order_Status")) : "UNKNOWN";
         orderDao.updateOrderStatus(orderId, newStatus);
+        auditLogService.logActivity(tailorId, "UPDATE", "OUTFIT_ORDER", String.valueOf(orderId), oldStatus, newStatus);
     }
 
     private BigDecimal parseDecimal(String value) {

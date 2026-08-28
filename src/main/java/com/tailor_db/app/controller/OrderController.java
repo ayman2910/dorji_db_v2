@@ -61,8 +61,10 @@ public class OrderController {
     }
 
     @PostMapping("/{id}/status")
-    public String updateOrderStatus(@PathVariable("id") int id, @RequestParam("status") String status) {
-        orderService.updateOrderStatus(id, status);
+    public String updateOrderStatus(@PathVariable("id") int id, @RequestParam("status") String status, Authentication auth) {
+        Map<String, Object> tailor = userService.getUserByUsername(auth.getName());
+        int tailorId = ((Number) tailor.get("USER_ID")).intValue();
+        orderService.updateOrderStatus(id, status, tailorId);
         return "redirect:/orders";
     }
 
@@ -74,8 +76,10 @@ public class OrderController {
     }
 
     @PostMapping("/{id}/measurements")
-    public String saveMeasurements(@PathVariable int id, @RequestParam Map<String, String> formData) {
-        measurementService.saveOrderMeasurements(id, formData);
+    public String saveMeasurements(@PathVariable int id, @RequestParam Map<String, String> formData, Authentication auth) {
+        Map<String, Object> tailor = userService.getUserByUsername(auth.getName());
+        int tailorId = ((Number) tailor.get("USER_ID")).intValue();
+        measurementService.saveOrderMeasurements(id, formData, tailorId);
         return "redirect:/orders";
     }
 
@@ -90,14 +94,18 @@ public class OrderController {
     }
 
     @PostMapping("/{id}/materials/fabric")
-    public String addFabric(@PathVariable int id, @RequestParam Map<String, String> formData) {
-        materialService.addFabricToOrder(id, formData);
+    public String addFabric(@PathVariable int id, @RequestParam Map<String, String> formData, Authentication auth) {
+        Map<String, Object> tailor = userService.getUserByUsername(auth.getName());
+        int tailorId = ((Number) tailor.get("USER_ID")).intValue();
+        materialService.addFabricToOrder(id, formData, tailorId);
         return "redirect:/orders/" + id + "/materials";
     }
 
     @PostMapping("/{id}/materials/consume")
-    public String consumeInventory(@PathVariable int id, @RequestParam Map<String, String> formData) {
-        materialService.consumeInventoryForOrder(id, formData);
+    public String consumeInventory(@PathVariable int id, @RequestParam Map<String, String> formData, Authentication auth) {
+        Map<String, Object> tailor = userService.getUserByUsername(auth.getName());
+        int tailorId = ((Number) tailor.get("USER_ID")).intValue();
+        materialService.consumeInventoryForOrder(id, formData, tailorId);
         return "redirect:/orders/" + id + "/materials";
     }
 }

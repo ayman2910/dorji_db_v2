@@ -45,6 +45,7 @@
                 <table class="min-w-full divide-y divide-gray-200">
                     <thead class="bg-gray-50">
                         <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Image</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Style Name</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Base Price</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Est. Labor Hours</th>
@@ -53,6 +54,11 @@
                     </thead>
                     <tbody class="bg-white divide-y divide-gray-200">
                         <tr th:each="style : ${styles}" class="hover:bg-gray-50 transition">
+                            <td class="px-6 py-4 whitespace-nowrap text-sm">
+                                <img th:src="${style.Image_Path != null and !#strings.isEmpty(style.Image_Path) ? style.Image_Path : '/images/styles/default-style.png'}"
+                                     alt="Style Image"
+                                     class="w-16 h-16 object-cover rounded shadow-sm border border-gray-200 bg-gray-100">
+                            </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900" th:text="${style.Style_name}">Style Name</td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">Tk [[${#numbers.formatDecimal(style.Base_Price, 1, 'COMMA', 2, 'POINT')}]]</td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700" th:text="${style.Estimated_Labor_Hours}">Hours</td>
@@ -65,7 +71,7 @@
                             </td>
                         </tr>
                         <tr th:if="${styles == null or styles.size() == 0}">
-                            <td colspan="4" class="px-6 py-12 text-center text-gray-500">No style templates found. Click "Create New Style" to add one.</td>
+                            <td colspan="5" class="px-6 py-12 text-center text-gray-500">No style templates found. Click "Create New Style" to add one.</td>
                         </tr>
                     </tbody>
                 </table>

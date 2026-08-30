@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Order - Smart Dorji Shop</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 min-h-screen">
+<nav class="bg-white shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between h-16">
+            <div class="flex items-center">
+                <a href="/dashboard" class="text-xl font-bold text-indigo-600">Smart Dorji Shop</a>
+            </div>
+            <div class="flex items-center space-x-4">
+                <a href="/dashboard" class="text-gray-700 hover:text-indigo-600 font-medium transition">Dashboard</a>
+                <a href="/styles" class="text-gray-700 hover:text-indigo-600 font-medium transition">Manage Styles</a>
+                <a href="/inventory" class="text-gray-700 hover:text-indigo-600 font-medium transition">Inventory</a>
+                <a href="/orders" class="text-indigo-600 font-medium">Orders</a>
+                <a href="/customers" class="text-gray-700 hover:text-indigo-600 font-medium transition">Customers</a>
+                <a href="/audit-logs" class="text-gray-700 hover:text-indigo-600 font-medium transition">Audit Logs</a>
+                <a th:if="${session.isMasterAdmin}" href="/admin/tailors" class="text-gray-700 hover:text-indigo-600 font-medium transition">Approvals</a>
+                <a href="/profile" class="text-gray-700 hover:text-indigo-600 font-medium transition">Profile</a>
+                <form th:action="@{/logout}" method="post">
+                    <button type="submit" class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-2 px-4 rounded transition duration-150 ease-in-out">
+                        Sign Out
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<main class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+    <div class="px-4 sm:px-0">
+        <div class="max-w-2xl mx-auto">
+            <div class="bg-white shadow rounded-lg p-6">
+                <h2 class="text-2xl font-bold text-gray-900 mb-6">Edit Order #[[${order.Order_ID}]]</h2>
+                
+                <div class="mb-4 text-gray-700">
+                    <p><strong>Customer:</strong> [[${order.Customer_Name}]]</p>
+                    <p><strong>Style:</strong> [[${order.Style_name}]]</p>
+                </div>
+
+                <form th:action="@{|/orders/${order.Order_ID}/edit|}" method="post" class="space-y-4">
+                    <div>
+                        <label for="deliveryDate" class="block text-sm font-medium text-gray-700 mb-1">Delivery Date</label>
+                        <input type="date"
+                               id="deliveryDate"
+                               name="deliveryDate"
+                               required
+                               th:value="${order.Delivery_Date}"
+                               class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                    </div>
+
+                    <div>
+                        <label for="totalPrice" class="block text-sm font-medium text-gray-700 mb-1">Total Price (Tk)</label>
+                        <input type="number"
+                               id="totalPrice"
+                               name="totalPrice"
+                               required
+                               step="0.01"
+                               min="0"
+                               th:value="${order.Total_Price}"
+                               class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                    </div>
+
+                    <div class="flex justify-end space-x-3 pt-4 border-t border-gray-200">
+                        <a href="/orders"
+                           class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-2 px-4 rounded transition duration-150 ease-in-out">
+                            Cancel
+                        </a>
+                        <button type="submit"
+                                class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded transition duration-150 ease-in-out">
+                            Update Order
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</main>
+</body>
+</html>

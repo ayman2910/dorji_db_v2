@@ -201,3 +201,23 @@ ALTER TABLE OUTFIT_ORDER DROP FOREIGN KEY fk_order_style;
 ALTER TABLE OUTFIT_ORDER
     ADD CONSTRAINT fk_order_style
         FOREIGN KEY (Style_ID) REFERENCES STYLE_TEMPLATE(Style_ID) ON DELETE CASCADE;
+
+
+ALTER TABLE STYLE_TEMPLATE DROP COLUMN Image_Path;
+
+CREATE TABLE STYLE_IMAGE (
+                             Image_ID INT AUTO_INCREMENT PRIMARY KEY,
+                             Style_ID INT NOT NULL,
+                             Image_Path VARCHAR(255) NOT NULL,
+                             CONSTRAINT fk_style_image
+                                 FOREIGN KEY (Style_ID)
+                                     REFERENCES STYLE_TEMPLATE(Style_ID)
+                                     ON DELETE CASCADE
+);
+-- 1. Add 'PENDING_APPROVAL' to the allowed statuses
+ALTER TABLE OUTFIT_ORDER
+    MODIFY COLUMN Order_Status ENUM('PENDING_APPROVAL', 'MEASURED', 'CUTTING', 'SEWING', 'FITTING','READY','READY_FOR_DELIVERY', 'DELIVERED') NOT NULL DEFAULT 'PENDING_APPROVAL';
+
+-- 2. Allow Tailor_ID to be empty (NULL) until the Admin assigns a tailor
+ALTER TABLE OUTFIT_ORDER
+    MODIFY COLUMN Tailor_ID INT NULL;

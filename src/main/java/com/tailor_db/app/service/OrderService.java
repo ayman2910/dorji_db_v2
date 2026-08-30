@@ -83,6 +83,19 @@ public class OrderService {
     }
 
     @Transactional
+    public void updateOrderDetails(int orderId, Map<String, String> formData, int tailorId) {
+        LocalDate deliveryDate = LocalDate.parse(formData.get("deliveryDate"));
+        BigDecimal totalPrice = parseDecimal(formData.get("totalPrice"));
+
+        Map<String, Object> order = orderDao.findById(orderId);
+        String oldDetails = order != null ? "Date: " + order.get("Delivery_Date") + ", Price: " + order.get("Total_Price") : "UNKNOWN";
+        String newDetails = "Date: " + deliveryDate + ", Price: " + totalPrice;
+        
+        orderDao.updateOrderDetails(orderId, java.sql.Date.valueOf(deliveryDate), totalPrice);
+        auditLogService.logActivity(tailorId, "UPDATE", "OUTFIT_ORDER", String.valueOf(orderId), oldDetails, newDetails);
+    }
+
+    @Transactional
     public void deleteOrder(int orderId, int tailorId) {
         Map<String, Object> order = orderDao.findById(orderId);
         String orderSummary = order != null ? "Customer: " + order.get("Customer_Name") + ", Style: " + order.get("Style_name") : "ID: " + orderId;

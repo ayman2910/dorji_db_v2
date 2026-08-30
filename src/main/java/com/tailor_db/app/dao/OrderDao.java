@@ -13,6 +13,7 @@ import java.sql.Statement;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
+import java.math.BigDecimal;
 
 @Repository
 public class OrderDao {
@@ -72,6 +73,11 @@ public class OrderDao {
     public void deleteOrder(int orderId) {
         String sql = "DELETE FROM OUTFIT_ORDER WHERE Order_ID = ?";
         jdbcTemplate.update(sql, orderId);
+    }
+
+    public void updateOrderDetails(int orderId, Date deliveryDate, BigDecimal totalPrice) {
+        String sql = "UPDATE OUTFIT_ORDER SET Delivery_Date = ?, Total_Price = ? WHERE Order_ID = ?";
+        jdbcTemplate.update(sql, deliveryDate, totalPrice, orderId);
     }
 
     private Date toSqlDate(Object value) {

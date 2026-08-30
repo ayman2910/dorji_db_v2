@@ -68,6 +68,20 @@ public class OrderController {
         return "redirect:/orders";
     }
 
+    @GetMapping("/{id}/edit")
+    public String showEditForm(@PathVariable int id, Model model) {
+        model.addAttribute("order", orderService.getOrderById(id));
+        return "orders/edit";
+    }
+
+    @PostMapping("/{id}/edit")
+    public String updateOrderDetails(@PathVariable int id, @RequestParam Map<String, String> formData, Authentication auth) {
+        Map<String, Object> tailor = userService.getUserByUsername(auth.getName());
+        int tailorId = ((Number) tailor.get("USER_ID")).intValue();
+        orderService.updateOrderDetails(id, formData, tailorId);
+        return "redirect:/orders";
+    }
+
     @GetMapping("/{id}/measurements")
     public String showMeasurements(@PathVariable int id, Model model) {
         model.addAttribute("measurements", measurementService.getMeasurementForm(id));

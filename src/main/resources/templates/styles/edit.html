@@ -21,6 +21,7 @@
                     <a href="/customers" class="text-gray-700 hover:text-indigo-600 font-medium transition">Customers</a>
                     <a href="/audit-logs" class="text-gray-700 hover:text-indigo-600 font-medium transition">Audit Logs</a>
                     <a th:if="${session.isMasterAdmin}" href="/admin/tailors" class="text-gray-700 hover:text-indigo-600 font-medium transition">Approvals</a>
+                    <a href="/profile" class="text-gray-700 hover:text-indigo-600 font-medium transition">Profile</a>
                     <form th:action="@{/logout}" method="post">
                         <button type="submit" class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-2 px-4 rounded transition duration-150 ease-in-out">
                             Sign Out
@@ -83,6 +84,35 @@
                             </button>
                         </div>
                     </form>
+
+                    <div class="mt-8 border-t border-gray-200 pt-6">
+                        <h3 class="text-lg font-medium text-gray-900 mb-4">Style Images (Max 5)</h3>
+                        
+                        <!-- Existing Images Grid -->
+                        <div class="grid grid-cols-2 md:grid-cols-3 gap-4 mb-6" th:if="${images != null and !images.empty}">
+                            <div th:each="img : ${images}" class="relative bg-gray-100 rounded-lg overflow-hidden shadow-sm border border-gray-200">
+                                <img th:src="${img.Image_Path}" alt="Style Image" class="w-full h-32 object-cover">
+                                <form th:action="@{|/styles/${style.Style_ID}/images/${img.Image_ID}/delete|}" method="post" class="absolute top-1 right-1" onsubmit="return confirm('Delete this image?');">
+                                    <button type="submit" class="bg-red-500 hover:bg-red-600 text-white p-1 rounded-full text-xs" title="Delete Image">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                        </svg>
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                        <p class="text-sm text-gray-500 mb-6" th:if="${images == null or images.empty}">No images uploaded yet.</p>
+
+                        <!-- Upload Form -->
+                        <form th:action="@{|/styles/${style.Style_ID}/images|}" method="post" enctype="multipart/form-data" class="flex items-center space-x-4">
+                            <div class="flex-1">
+                                <input type="file" name="images" multiple accept="image/*" class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100">
+                            </div>
+                            <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded transition duration-150 ease-in-out">
+                                Upload Images
+                            </button>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>

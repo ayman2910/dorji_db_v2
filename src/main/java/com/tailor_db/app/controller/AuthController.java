@@ -41,6 +41,14 @@ public class AuthController {
                 session.setAttribute("isMasterAdmin", tailorAdminService.isMasterAdmin(userId));
             }
         }
+
+        // Redirect customers to their dedicated portal
+        boolean isCustomer = authentication != null &&
+                authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_CUSTOMER"));
+        if (isCustomer) {
+            return "redirect:/customer/dashboard";
+        }
+
         boolean isTailor = authentication != null &&
                 authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_TAILOR"));
         model.addAttribute("isTailor", isTailor);

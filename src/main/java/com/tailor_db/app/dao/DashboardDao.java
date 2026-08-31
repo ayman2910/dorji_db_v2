@@ -16,13 +16,13 @@ public class DashboardDao {
     }
 
     public int getPendingOrdersCount() {
-        String sql = "SELECT COUNT(*) FROM OUTFIT_ORDER WHERE Order_Status != 'DELIVERED'";
+        String sql = "SELECT COUNT(*) FROM OUTFIT_ORDER WHERE Order_Status NOT IN ('DELIVERED', 'CANCELLED')";
         Integer count = jdbcTemplate.queryForObject(sql, Integer.class);
         return count != null ? count : 0;
     }
 
     public double getTotalRevenue() {
-        String sql = "SELECT COALESCE(SUM(Total_Price), 0.0) FROM OUTFIT_ORDER";
+        String sql = "SELECT COALESCE(SUM(Total_Price), 0.0) FROM OUTFIT_ORDER WHERE Order_Status != 'CANCELLED'";
         Double total = jdbcTemplate.queryForObject(sql, Double.class);
         return total != null ? total : 0.0;
     }
@@ -34,13 +34,13 @@ public class DashboardDao {
     }
 
     public double getOutstandingBalance() {
-        String sql = "SELECT COALESCE(SUM(Total_Price - Advance_Paid), 0.0) FROM OUTFIT_ORDER WHERE Order_Status != 'DELIVERED'";
+        String sql = "SELECT COALESCE(SUM(Total_Price - Advance_Paid), 0.0) FROM OUTFIT_ORDER WHERE Order_Status NOT IN ('DELIVERED', 'CANCELLED')";
         Double total = jdbcTemplate.queryForObject(sql, Double.class);
         return total != null ? total : 0.0;
     }
 
     public List<Map<String, Object>> getPipelineBreakdown() {
-        String sql = "SELECT Order_Status, COUNT(*) as StatusCount FROM OUTFIT_ORDER WHERE Order_Status != 'DELIVERED' GROUP BY Order_Status";
+        String sql = "SELECT Order_Status, COUNT(*) as StatusCount FROM OUTFIT_ORDER WHERE Order_Status NOT IN ('DELIVERED', 'CANCELLED') GROUP BY Order_Status";
         return jdbcTemplate.queryForList(sql);
     }
 
@@ -48,7 +48,7 @@ public class DashboardDao {
         String sql = "SELECT o.Order_ID, u.First_name, u.Last_name, o.Delivery_Date, o.Order_Status " +
                      "FROM OUTFIT_ORDER o " +
                      "JOIN APP_USER u ON o.Customer_ID = u.USER_ID " +
-                     "WHERE o.Order_Status != 'DELIVERED' " +
+                     "WHERE o.Order_Status NOT IN ('DELIVERED', 'CANCELLED') " +
                      "ORDER BY o.Delivery_Date ASC " +
                      "LIMIT 5";
         return jdbcTemplate.queryForList(sql);

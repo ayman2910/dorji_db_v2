@@ -1,5 +1,6 @@
 package com.tailor_db.app.controller;
 
+import com.tailor_db.app.service.AdminWebOrderService;
 import com.tailor_db.app.service.TailorAdminService;
 import com.tailor_db.app.service.UserService;
 import jakarta.servlet.http.HttpSession;
@@ -14,14 +15,16 @@ import java.security.Principal;
 import java.util.Map;
 
 @Controller
-@RequestMapping("/admin/tailors")
+@RequestMapping("/admin")
 public class TailorAdminController {
 
     private final TailorAdminService tailorAdminService;
+    private final AdminWebOrderService adminWebOrderService;
     private final UserService userService;
 
-    public TailorAdminController(TailorAdminService tailorAdminService, UserService userService) {
+    public TailorAdminController(TailorAdminService tailorAdminService, AdminWebOrderService adminWebOrderService, UserService userService) {
         this.tailorAdminService = tailorAdminService;
+        this.adminWebOrderService = adminWebOrderService;
         this.userService = userService;
     }
 
@@ -42,30 +45,31 @@ public class TailorAdminController {
         return false;
     }
 
-    @GetMapping
-    public String listPendingTailors(HttpSession session, Principal principal, Model model) {
+    @GetMapping("/approvals")
+    public String listPendingActions(HttpSession session, Principal principal, Model model) {
         if (!checkAdmin(session, principal)) {
             return "redirect:/dashboard";
         }
         model.addAttribute("pendingTailors", tailorAdminService.getPending());
+        model.addAttribute("pendingOrders", adminWebOrderService.getPendingOrders());
         return "admin/approvals";
     }
 
-    @PostMapping("/{id}/approve")
+    @PostMapping("/tailors/{id}/approve")
     public String approveTailor(@PathVariable("id") int id, HttpSession session, Principal principal) {
         if (!checkAdmin(session, principal)) {
             return "redirect:/dashboard";
         }
         tailorAdminService.approve(id);
-        return "redirect:/admin/tailors";
+        return "redirect:/admin/approvals";
     }
 
-    @PostMapping("/{id}/reject")
+    @PostMapping("/tailors/{id}/reject")
     public String rejectTailor(@PathVariable("id") int id, HttpSession session, Principal principal) {
         if (!checkAdmin(session, principal)) {
             return "redirect:/dashboard";
         }
         tailorAdminService.deleteTailor(id);
-        return "redirect:/admin/tailors";
+        return "redirect:/admin/approvals";
     }
 }

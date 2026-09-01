@@ -184,19 +184,16 @@ CREATE TABLE TAILOR_ACTIVITY_LOG (
                                              ON DELETE CASCADE
 );
 
--- 1. Fix Customer Relationship
 ALTER TABLE OUTFIT_ORDER DROP FOREIGN KEY fk_order_customer;
 ALTER TABLE OUTFIT_ORDER
     ADD CONSTRAINT fk_order_customer
         FOREIGN KEY (Customer_ID) REFERENCES CUSTOMER(USER_ID) ON DELETE CASCADE;
 
--- 2. Fix Tailor Relationship
 ALTER TABLE OUTFIT_ORDER DROP FOREIGN KEY fk_order_tailor;
 ALTER TABLE OUTFIT_ORDER
     ADD CONSTRAINT fk_order_tailor
         FOREIGN KEY (Tailor_ID) REFERENCES TAILOR(USER_ID) ON DELETE CASCADE;
 
--- 3. Fix Style Template Relationship
 ALTER TABLE OUTFIT_ORDER DROP FOREIGN KEY fk_order_style;
 ALTER TABLE OUTFIT_ORDER
     ADD CONSTRAINT fk_order_style
@@ -214,10 +211,8 @@ CREATE TABLE STYLE_IMAGE (
                                      REFERENCES STYLE_TEMPLATE(Style_ID)
                                      ON DELETE CASCADE
 );
--- 1. Add 'PENDING_APPROVAL' to the allowed statuses
 ALTER TABLE OUTFIT_ORDER
     MODIFY COLUMN Order_Status ENUM('PENDING_APPROVAL', 'MEASURED', 'CUTTING', 'SEWING', 'FITTING', 'READY', 'READY_FOR_DELIVERY', 'DELIVERED', 'CANCELLED') NOT NULL DEFAULT 'PENDING_APPROVAL';
 
--- 2. Allow Tailor_ID to be empty (NULL) until the Admin assigns a tailor
 ALTER TABLE OUTFIT_ORDER
     MODIFY COLUMN Tailor_ID INT NULL;

@@ -85,12 +85,15 @@ CREATE TABLE OUTFIT_ORDER (
                               Delivery_Date DATE NOT NULL,
                               Est_Labor_Hours DECIMAL(5,2) NOT NULL,
                               Order_Status ENUM(
-        'MEASURED',
-        'CUTTING',
-        'SEWING',
-        'READY_FOR_DELIVERY',
-        'DELIVERED'
-    ) NOT NULL DEFAULT 'MEASURED',
+                                  'PENDING_APPROVAL',
+                                  'MEASURED',
+                                  'CUTTING',
+                                  'SEWING',
+                                  'FITTING',
+                                  'READY',
+                                  'READY_FOR_DELIVERY',
+                                  'DELIVERED',
+                                  'CANCELLED') NOT NULL DEFAULT 'PENDING_APPROVAL';
                               Total_Price DECIMAL(10,2) NOT NULL,
                               Advance_Paid DECIMAL(10,2) NOT NULL DEFAULT 0.00,
 
@@ -211,8 +214,7 @@ CREATE TABLE STYLE_IMAGE (
                                      REFERENCES STYLE_TEMPLATE(Style_ID)
                                      ON DELETE CASCADE
 );
-ALTER TABLE OUTFIT_ORDER
-    MODIFY COLUMN Order_Status ENUM('PENDING_APPROVAL', 'MEASURED', 'CUTTING', 'SEWING', 'FITTING', 'READY', 'READY_FOR_DELIVERY', 'DELIVERED', 'CANCELLED') NOT NULL DEFAULT 'PENDING_APPROVAL';
+
 
 ALTER TABLE OUTFIT_ORDER
     MODIFY COLUMN Tailor_ID INT NULL;
